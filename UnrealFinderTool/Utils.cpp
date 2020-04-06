@@ -352,7 +352,10 @@ CheckAgian:
 			if (!(uObject4InternalIndex == 4 || uObject4InternalIndex == 12)) continue;
 			if (!(uObject5InternalIndex == 5 || uObject5InternalIndex == 15)) continue;
 
-			// Check if 2nd UObject have FName_Index == 100
+			bool bFoundNameIndex = true;
+
+			/*
+			// Check if 2nd UObject have FName_Index == 100 >
 			bool bFoundNameIndex = false;
 			for (int j = 0x4; j < 0x1C; j += 0x4)
 			{
@@ -363,6 +366,7 @@ CheckAgian:
 					break;
 				}
 			}
+			*/
 
 			// Check if it's chunks address
 			if (isChunks && !firstCheck)

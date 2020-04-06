@@ -42,7 +42,7 @@ std::vector<uintptr_t> GNamesFinder::Find()
 	if (!cmp3.empty())
 	{
 		// None == 0
-		auto byte = PatternScan::Parse("Byte", 0, "42 79 74 65 50 72 6F 70 65 72 74 79 00", 0xFF);
+		auto byte = PatternScan::Parse("Byte", 0, "42 79 74 65 50 72 6F 70 65 72 74 79 00", 0xFF); //ByteProperty WideString
 		auto result = PatternScan::FindPattern(Utils::MemoryObj, cmp3[0], cmp3[0] + 0x200, { byte }, true);
 		auto it = result.find("Byte");
 		if (it != result.end() && !it->second.empty())
