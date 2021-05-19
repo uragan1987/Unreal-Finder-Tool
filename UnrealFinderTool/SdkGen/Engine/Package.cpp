@@ -18,7 +18,7 @@
 #include "Package.h"
 
 std::unordered_map<UEObject, const Package*> Package::PackageMap;
-
+static int counter = 0;
 /// <summary>
 /// Compare two properties.
 /// </summary>
@@ -174,6 +174,7 @@ void Package::GeneratePrerequisites(const UEObject& obj, std::unordered_map<uint
 			GeneratePrerequisites(*outer, processedObjects);
 		}
 
+		counter++;
 		auto structObj = obj.Cast<UEStruct>();
 		auto super = structObj.GetSuper();
 		if (super.IsValid() && super != obj)

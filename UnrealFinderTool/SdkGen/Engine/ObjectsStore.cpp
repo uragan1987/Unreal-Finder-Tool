@@ -167,7 +167,16 @@ UEObject* ObjectsStore::GetByIndex(const size_t index) const
 
 UEObject* ObjectsStore::GetByAddress(const uintptr_t objAddress)
 {
-	return GObjObjects.Find(objAddress)->get();
+	auto objList = GObjObjects.Find(objAddress);
+	//uragan CRASH here
+	/*
+	if (objList == NULL) {
+		UEObject* nObj = new UEObject;
+		return nObj;
+	}
+	*/
+	UEObject* found = objList->get();
+	return found;
 }
 
 UEObject* ObjectsStore::GetByAddress(const uintptr_t objAddress, bool& success)

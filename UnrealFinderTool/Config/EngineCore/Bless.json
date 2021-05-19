@@ -1,0 +1,26 @@
+{
+  "engine version": "4.19.2",
+  "structs": [
+    {
+      "name": "UField",
+      "super": "UObject",
+      "vars": [
+        { "pad_1": "120" },
+        { "Next": "UField*" }
+      ],
+      "note": ""
+    },
+    {
+      "name": "UStruct",
+      "super": "UField",
+      "vars": [
+        { "SuperField": "UStruct*" },
+        { "Children": "UField*" },
+        { "PropertySize": "int" },
+        { "MinAlignment": "int" },
+        { "pad_1": "64" }
+      ],
+      "note": ""
+    }
+  ]
+}
