@@ -3,9 +3,11 @@
 #include "Scanner.h"
 #include "Memory.h"
 
+// 00 = random
 Pattern GNamesFinder::noneSig = PatternScan::Parse("None", 0, "4E 6F 6E 65 00", 0xFF);
 Pattern GNamesFinder::byteSig = PatternScan::Parse("Byte", 0, "42 79 74 65 50 72 6F 70 65 72 74 79 00", 0xFF);
 Pattern GNamesFinder::intSig = PatternScan::Parse("Int", 0, "49 6E 74 50 72 6F 70 65 72 74 79 00", 0xFF);
+Pattern GNamesFinder::nameSig = PatternScan::Parse("Name", 0, "4E 61 6D 65 50 72 6F 70 65 72 74 79 00", 0xFF);
 Pattern GNamesFinder::multicastSig = PatternScan::Parse("MulticastDelegate", 0, "4D 75 6C 74 69 63 61 73 74 44 65 6C 65 67 61 74 65 50 72 6F 70 65 72 74 79", 0xFF);
 
 GNamesFinder::GNamesFinder() : dwStart(0), dwEnd(0)
@@ -19,21 +21,29 @@ std::vector<uintptr_t> GNamesFinder::Find()
 	dwEnd = !Utils::MemoryObj->Is64Bit ? 0x7FEFFFFF : static_cast<uintptr_t>(0x7fffffffffff);
 
 	// Scan
-	std::vector<Pattern> inputs = { noneSig, byteSig, intSig, multicastSig };
+	std::vector<Pattern> inputs = { noneSig, byteSig, intSig, nameSig, multicastSig };
 	const auto searcher = PatternScan::FindPattern(Utils::MemoryObj, dwStart, dwEnd, inputs, false, true);
 
 	if (searcher.find(noneSig.Name) == searcher.end())
 		return ret;
-
+	
 	const auto none_r = searcher.find(noneSig.Name)->second;
 	const auto byte_r = searcher.find(byteSig.Name)->second;
 	const auto int_r = searcher.find(intSig.Name)->second;
+	const auto name_r = searcher.find(nameSig.Name)->second;
 	const auto multicast_r = searcher.find(multicastSig.Name)->second;
 
 	// Get smallest address
+	
+	
 	const auto cmp1 = GetNearNumbers(none_r, byte_r, 0x150);
 	const auto cmp2 = GetNearNumbers(cmp1, int_r, 0x150);
 	const auto cmp3 = GetNearNumbers(cmp2, multicast_r, 0x400);
+	/*
+	const auto cmp1 = GetNearNumbers(byte_r, int_r, 0x150);
+	const auto cmp2 = GetNearNumbers(cmp1, name_r, 0x150);
+	const auto cmp3 = GetNearNumbers(cmp2, multicast_r, 0x400);
+	*/
 
 	size_t nameOffset = Utils::MemoryObj->Is64Bit ? 0x10 : 0x8;
 	uintptr_t byteAddress = 0;
@@ -42,7 +52,7 @@ std::vector<uintptr_t> GNamesFinder::Find()
 	if (!cmp3.empty())
 	{
 		// None == 0
-		auto byte = PatternScan::Parse("Byte", 0, "42 79 74 65 50 72 6F 70 65 72 74 79 00", 0xFF);
+		auto byte = PatternScan::Parse("Byte", 0, "42 79 74 65 50 72 6F 70 65 72 74 79 00", 0xFF); //ByteProperty
 		auto result = PatternScan::FindPattern(Utils::MemoryObj, cmp3[0], cmp3[0] + 0x200, { byte }, true);
 		auto it = result.find("Byte");
 		if (it != result.end() && !it->second.empty())
@@ -73,7 +83,6 @@ uintptr_t GNamesFinder::GetChunksAddress(const uintptr_t fname_address)
 	// Get GName array address
 	auto address_holder = HYPERSCAN_SCANNER::Scan(Utils::MemoryObj->ProcessId, fname_address,
 		Utils::MemoryObj->Is64Bit ? HyperscanAllignment8Bytes : HyperscanAllignment4Bytes, HyperscanTypeExact);
-
 	// Nothing returned quit
 	if (!address_holder.empty())
 	{
