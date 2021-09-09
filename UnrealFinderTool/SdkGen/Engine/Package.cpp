@@ -1040,6 +1040,10 @@ std::string Package::BuildMethodSignature(const Method & m, const Class & c, boo
 
 	std::ostringstream ss;
 
+	ss << m.Index;
+
+	ss << "\t";
+
 	if (m.IsStatic && inHeader && !generator->ShouldConvertStaticMethods())
 	{
 		ss << "static ";

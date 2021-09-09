@@ -26,6 +26,7 @@ public:
 	explicit UEObject(UObject* object) : Object(object) {}
 
 	uintptr_t GetAddress() const;
+	uintptr_t GetVfTable() const;
 	bool IsValid() const;
 	size_t GetIndex() const;
 

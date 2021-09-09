@@ -28,7 +28,7 @@ bool InstanceLogger::ObjectDump()
 		if (ObjectsStore().GetByIndex(i)->GetAddress() != NULL)
 		{
 			const UEObject* obj = ObjectsStore().GetByIndex(i);
-			fprintf(log, "[%06i] %-100s 0x%" PRIXPTR "\n", int(i), obj->GetName().c_str(), obj->GetAddress());
+			fprintf(log, "[%06i] %-100s 0x%" PRIXPTR "    0x%" PRIXPTR "\n", int(i), obj->GetName().c_str(), obj->GetAddress(), obj->GetVfTable());
 		}
 	}
 

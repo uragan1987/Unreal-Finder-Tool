@@ -25,6 +25,11 @@ uintptr_t UEObject::GetAddress() const
 	return Object->ObjAddress;
 }
 
+uintptr_t UEObject::GetVfTable() const
+{
+	return Object->VfTable;
+}
+
 bool UEObject::IsValid() const
 {
 	return Object->ObjAddress != NULL && Object->VfTable != NULL && (Object->Name.ComparisonIndex > 0 && size_t(Object->Name.ComparisonIndex) <= NamesStore().GetNamesNum());
